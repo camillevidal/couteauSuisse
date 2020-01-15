@@ -22,6 +22,26 @@
             <type>jar</type>
         </dependency>
         <dependency>
+            <groupId>group.id</groupId>
+            <artifactId>artifact.id</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>group1.id</groupId>
+            <artifactId>itext1.id</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>itext.xtra</groupId>
+            <artifactId>artifact.xtra</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>itext.3</groupId>
+            <artifactId>artifact.itext3</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
             <groupId>javax</groupId>
             <artifactId>javaee-web-api</artifactId>
             <version>7.0</version>
@@ -33,6 +53,7 @@
             <version>7.1.9</version>            
             <type>pom</type>        
         </dependency>
+        
     </dependencies> 
 
     <build>

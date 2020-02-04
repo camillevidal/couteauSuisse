@@ -1,48 +1,54 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package com.mycompany.couteausuisse;
 
+package com.mycompany.couteausuisse;
+ 
+import com.itextpdf.kernel.PdfException;
+import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfObject;
+import com.itextpdf.kernel.pdf.PdfReader;
 import com.itextpdf.kernel.pdf.PdfStream;
-import com.itextpdf.text.pdf.PRStream;
-import com.itextpdf.text.pdf.PdfName;
-import com.itextpdf.text.pdf.PdfReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-
-/**
- *
- * @author camillevidal
- */
 public class ExtractImage {
-
-    /**
-     * @param args the command line arguments
-     */
+    public static final String DEST = "./result/new";
+ 
+    public static final String SRC = "./result/image.pdf";
+ 
+    public static void before() {
+        new File(DEST).getParentFile().mkdirs();
+    }
+ 
     public static void main(String[] args) throws IOException {
-        PdfReader reader;
-
-        File file = new File("example.pdf");
-        reader = new PdfReader(file.getAbsolutePath());
-        for (int i = 0; i < reader.getXrefSize(); i++) {
-            PdfObject pdfobj = reader.getPdfObject(i);
-            if (pdfobj == null || !pdfobj.isStream()) {
-                continue;
-            }
-            PdfStream stream = (PdfStream) pdfobj;
-            PdfObject pdfsubtype = stream.get(PdfName.SUBTYPE);
-            if (pdfsubtype != null && pdfsubtype.toString().equals(PdfName.IMAGE.toString())) {
-                byte[] img = PdfReader.getStreamBytesRaw((PRStream) stream);
-                FileOutputStream out = new FileOutputStream(new File(file.getParentFile(), String.format("%1$05d", i) + ".jpg"));
-                out.write(img);
-                out.flush();
-                out.close();
+        File file = new File(DEST);
+        file.mkdirs();
+ 
+        new ExtractImage().manipulatePdf(DEST);
+    }
+ 
+    protected void manipulatePdf(String dest) throws IOException {
+        PdfDocument pdfDoc = new PdfDocument(new PdfReader(SRC));
+ 
+        int numberOfPdfObjects = pdfDoc.getNumberOfPdfObjects();
+        for (int i = 1; i <= numberOfPdfObjects; i++) {
+            PdfObject obj = pdfDoc.getPdfObject(i);
+            if (obj != null && obj.isStream()) {
+                byte[] b;
+                try {
+ 
+                    // Get decoded stream bytes.
+                    b = ((PdfStream) obj).getBytes();
+                } catch (PdfException exc) {
+ 
+                    // Get originally encoded stream bytes
+                    b = ((PdfStream) obj).getBytes(false);
+                }
+ 
+                try (FileOutputStream fos = new FileOutputStream(String.format(dest + "/extract_streams%s.pdf", i))) {
+                    fos.write(b);
+                }
             }
         }
+ 
+        pdfDoc.close();
     }
-
 }

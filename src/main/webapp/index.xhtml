@@ -11,34 +11,51 @@
         <div id="titre">
             <h2>PDF EDITOR</h2>
         </div>
-         <h:form enctype="multipart/form-data"> 
+        <h:form enctype="multipart/form-data"> 
             <div class="bouttons">
                 <div class="btn">
-                    <p:commandButton value="Image en PDF" ajax="false" action="#{addImage.addimage()}" disabled="false"/>
+                    <p:commandButton value="Image en PDF" ajax="false" action="#{addImage.addImgInPdf()}" disabled="false"/>
                 </div>
                 <div class="btn">
-                <p:commandButton value="Fuisionner" ajax="false" disabled="false" />
+                    <p:commandButton value="Fusionner" ajax="false" disabled="false" />
                 </div>
                 <div class="btn">
-                <p:commandButton value="Extraire" ajax="false" disabled="false" />
+                    <p:commandButton value="Extraire" ajax="false" action="#{extractImage.extraireImg()}" disabled="false" />
                 </div>
             </div>
             <div class="bouttons">
-                <div class="btn">
-                <p:commandButton value="Supprimer" ajax="false" disabled="false" />
+                <div class="btn" id="btn_suppr">
+                    <p:commandButton value="Supprimer" disabled="false"/> 
                 </div>
                 <div class="btn">
-                <p:commandButton value="Trier" ajax="false" disabled="false" />
+                    <p:commandButton value="Reordonner" ajax="false" action="#{reorderPages.reorderPages()}" disabled="false" />
                 </div>
                 <div class="btn">
-                <p:commandButton value="Signer" ajax="false" disabled="false" />
+                    <p:commandButton value="Signer" ajax="false" action="#{signePdf.signFile()}" disabled="false" />
                 </div>
             </div>
             <p>Ajouter un PDF :</p>
+        </h:form>
+        <h:form enctype="multipart/form-data">
             <p:fileUpload value="#{uploadFile.file}" mode="simple" />
             <br/>
-            <p:commandButton value="Submit" ajax="false" action="#{uploadFile.upload}" disabled="false" />
+            <p:commandButton value="Submit" process="@form" ajax="false" action="#{uploadFile.upload()}" disabled="false" />
         </h:form>
+        <h:form>    
+            <br/>
+            <div id="supprimer">
+                <span class="ui-float-label">
+                    <p:inputText id="float-input" binding="#{input}"/>
+                    <p:outputLabel for="@previous" value="Numéro de la page à supprimer"  />'
+                </span>
+                <p:commandButton value="Remove" ajax="false" disabled="false" action="#{removePage.remove_page(input.value)}" />
+            </div>
+        </h:form>
+        <h:form>   
+            <p:commandButton value="Download" ajax="false">
+                <p:fileDownload value="#{fileDownloadView.file}" />
+            </p:commandButton>      
+        </h:form>
+        <h:outputScript library="js" name="newjavascript.js" target="head"/>
     </h:body>
 </html>
-

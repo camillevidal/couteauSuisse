@@ -1,0 +1,108 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.mycompany.couteausuisse;
+
+import com.itextpdf.io.source.RandomAccessSourceFactory;
+import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.PdfReader;
+import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.kernel.pdf.ReaderProperties;
+import com.itextpdf.layout.Document;
+import com.itextpdf.layout.element.AreaBreak;
+import com.itextpdf.layout.element.Paragraph;
+ 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Named;
+ 
+@Named
+@RequestScoped
+public class ReorderPages {
+    //public static final String fileToReord = "result/fichierSortie.pdf";
+   
+    private static String getFileExtension(File file) {
+        String fileName = file.getName();
+        if (fileName.lastIndexOf(".") != -1 && fileName.lastIndexOf(".") != 0) {
+            return fileName.substring(fileName.lastIndexOf(".") + 1);
+        } else {
+            return "";
+        }
+    }
+
+    public void reorderPages() {
+        File folder = new File("D:/Image/tp_pdf/input/");
+        File[] listOfFiles = folder.listFiles();
+        for (int i = 0; i < listOfFiles.length; i++) {
+            if (listOfFiles[i].isFile()) {
+                System.out.println(listOfFiles[i].getName());
+                String extension = getFileExtension(listOfFiles[i]);
+                if (extension.equals("pdf")) {
+                    try {
+                        reorder(listOfFiles[i].getAbsolutePath());
+                    } catch (Exception e) {
+                        System.out.println(e);
+                    }
+                }
+            }
+        }
+    }
+ 
+    public void reorder(String fileToReord) throws Exception {
+        File file = new File(fileToReord);
+        file.getParentFile().mkdirs();
+ 
+        new ReorderPages().manipulatePdf(fileToReord);
+    }
+ 
+    protected void manipulatePdf(String dest) throws Exception {
+        PdfDocument srcDoc = new PdfDocument(new PdfReader(new RandomAccessSourceFactory()
+                .createSource(createBaos().toByteArray()), new ReaderProperties()));
+ 
+        PdfDocument resultDoc = new PdfDocument(new PdfWriter(dest));
+ 
+        // One should call this method to preserve the outlines of the source pdf file, otherwise they
+        // will be absent in the resultant document to which we copy pages. In this particular sample,
+        // however, this line doesn't make sense, since the source pdf lacks outlines
+        resultDoc.initializeOutlines();
+ 
+        List<Integer> pages = new ArrayList<>();
+        pages.add(1);
+        for (int i = 13; i <= 15; i++) {
+            pages.add(i);
+        }
+        for (int i = 2; i <= 12; i++) {
+            pages.add(i);
+        }
+        pages.add(16);
+        srcDoc.copyPagesTo(pages, resultDoc);
+ 
+        resultDoc.close();
+        srcDoc.close();
+    }
+ 
+    // Create a temporary document in memory. Then we will reopen it and change the order of its pages
+    private static ByteArrayOutputStream createBaos() {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+ 
+        PdfDocument pdfDoc = new PdfDocument(new PdfWriter(baos));
+        Document doc = new Document(pdfDoc);
+ 
+        for (int i = 1; i < 17; i++) {
+            doc.add(new Paragraph(String.format("Page %s", i)));
+            if (16 != i) {
+                doc.add(new AreaBreak());
+            }
+        }
+        doc.close();
+ 
+        return baos;
+    }
+}

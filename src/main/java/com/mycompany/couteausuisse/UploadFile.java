@@ -30,7 +30,6 @@ public class UploadFile {
     private UploadedFile file;
  
     public UploadedFile getFile() {
-        System.out.println(file);
         return file;
     }
  
@@ -46,7 +45,7 @@ public class UploadFile {
             byte[] buffer = new byte[fileContent.available()];
             fileContent.read(buffer);
             
-            File targetFile = new File("D:/Image/java/" + file.getFileName());
+            File targetFile = new File("D:/Image/tp_pdf/input/" + file.getFileName());
             FileOutputStream outStream = new FileOutputStream(targetFile);
             outStream.write(buffer);
         }

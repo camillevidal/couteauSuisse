@@ -14,9 +14,13 @@ import com.itextpdf.kernel.pdf.PdfWriter;
 
 import com.itextpdf.layout.Document; 
 import com.itextpdf.layout.element.Image;  
+import java.io.FileNotFoundException;
+import java.net.MalformedURLException;
 
-public class AddingImage {      
-   public static void main(String args[]) throws Exception {              
+public class AddingImage {    
+    
+   public static void addImage(String imageToTransform) throws MalformedURLException, FileNotFoundException {   
+       String[] extension = imageToTransform.split(".",2);
       
       // Creating a PdfWriter       
       String dest = "result/image.pdf";       
@@ -29,18 +33,18 @@ public class AddingImage {
       Document document = new Document(pdf);              
       
       // Creating an ImageData object       
-      String imFile = "images/chat1.jpg";       
-      ImageData data = ImageDataFactory.create(imFile);              
+           
+      ImageData data = ImageDataFactory.create(imageToTransform);              
       
       // Creating an Image object        
       Image image = new Image(data);                        
       
-      // Adding image to the document       
+      // Adding image to new pdf document   
       document.add(image);              
       
       // Closing the document       
       document.close();              
       
-      System.out.println("Image added");    
+      System.out.println("Image successful added");    
    } 
 }

@@ -9,8 +9,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 public class ExtractPage {
+//extraction d'une page d'un
 
-    public static void main(String[] args) throws DocumentException, IOException {
+    public void extractPaceFromPdf() throws DocumentException, IOException {
         Document document = new Document();
         PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream("result/fichierSortie.pdf"));
         PdfReader pdfr = new PdfReader("pdf/test.pdf");

@@ -10,22 +10,21 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 public class ExtractImage {
-    public static final String DEST = "./result/new";
- 
-    public static final String SRC = "./result/image.pdf";
- 
-    public static void before() {
+    
+    public void extractImageFromPdf(String DEST,String SRC) throws IOException{
         new File(DEST).getParentFile().mkdirs();
+        new File(DEST).getParentFile().mkdirs();
+        new ExtractImage().manipulatePdf(DEST,SRC);
     }
+    //public static final String DEST = "./result/new";
  
-    public static void main(String[] args) throws IOException {
-        File file = new File(DEST);
-        file.mkdirs();
+    //public static final String SRC = "./result/image.pdf";
  
-        new ExtractImage().manipulatePdf(DEST);
-    }
+   
  
-    protected void manipulatePdf(String dest) throws IOException {
+  
+ 
+    protected void manipulatePdf(String dest,String SRC) throws IOException {
         PdfDocument pdfDoc = new PdfDocument(new PdfReader(SRC));
  
         int numberOfPdfObjects = pdfDoc.getNumberOfPdfObjects();

@@ -42,15 +42,15 @@ import java.util.Properties;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
  
 public class SignePdf{
-    public static final String DEST = "result/";
+    //public static final String DEST = "result/";
  
-    public static final String SRC = "pdf/test.pdf";
+    //public static final String SRC = "pdf/test.pdf";
  
     public static final String[] RESULT_FILES = new String[] {
             "hello_hsm.pdf"
     };
  
-    public static void main(String[] args) throws IOException, GeneralSecurityException {
+    public static void signPdf(String DEST,String SRC ) throws IOException, GeneralSecurityException {
         File file = new File(DEST);
         file.mkdirs();
  

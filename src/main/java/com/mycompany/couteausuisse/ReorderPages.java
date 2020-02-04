@@ -29,13 +29,13 @@ import java.util.ArrayList;
 import java.util.List;
  
 public class ReorderPages {
-    public static final String DEST = "result/fichierSortie.pdf";
+    //public static final String fileToReord = "result/fichierSortie.pdf";
  
-    public static void main(String[] args) throws Exception {
-        File file = new File(DEST);
+    public static void reorder(String fileToReord) throws Exception {
+        File file = new File(fileToReord);
         file.getParentFile().mkdirs();
  
-        new ReorderPages().manipulatePdf(DEST);
+        new ReorderPages().manipulatePdf(fileToReord);
     }
  
     protected void manipulatePdf(String dest) throws Exception {

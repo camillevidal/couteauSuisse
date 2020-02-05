@@ -1,53 +1,47 @@
-
+// $Id$
 package com.mycompany.couteausuisse;
- 
-import com.itextpdf.kernel.PdfException;
-import com.itextpdf.kernel.pdf.PdfDocument;
-import com.itextpdf.kernel.pdf.PdfObject;
-import com.itextpdf.kernel.pdf.PdfReader;
-import com.itextpdf.kernel.pdf.PdfStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-public class ExtractImage {
-    
-    public void extractImageFromPdf(String DEST,String SRC) throws IOException{
-        new File(DEST).getParentFile().mkdirs();
-        new File(DEST).getParentFile().mkdirs();
-        new ExtractImage().manipulatePdf(DEST,SRC);
-    }
-    //public static final String DEST = "./result/new";
- 
-    //public static final String SRC = "./result/image.pdf";
- 
-   
- 
-  
- 
-    protected void manipulatePdf(String dest,String SRC) throws IOException {
-        PdfDocument pdfDoc = new PdfDocument(new PdfReader(SRC));
- 
-        int numberOfPdfObjects = pdfDoc.getNumberOfPdfObjects();
-        for (int i = 1; i <= numberOfPdfObjects; i++) {
-            PdfObject obj = pdfDoc.getPdfObject(i);
-            if (obj != null && obj.isStream()) {
-                byte[] b;
-                try {
- 
-                    // Get decoded stream bytes.
-                    b = ((PdfStream) obj).getBytes();
-                } catch (PdfException exc) {
- 
-                    // Get originally encoded stream bytes
-                    b = ((PdfStream) obj).getBytes(false);
-                }
- 
-                try (FileOutputStream fos = new FileOutputStream(String.format(dest + "/extract_streams%s.pdf", i))) {
-                    fos.write(b);
+import javax.imageio.ImageIO;
+import org.apache.pdfbox.cos.COSName;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageTree;
+import org.apache.pdfbox.pdmodel.PDResources;
+import org.apache.pdfbox.pdmodel.graphics.PDXObject;
+import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
+
+
+/**
+ * @author mkl
+ */
+public class ExtractImage
+{
+    public void writeImage() throws IOException{
+        File folder = new File("D:/assets/pdf/input/");
+        File[] listOfFiles = folder.listFiles();
+        File file = listOfFiles[0];
+        
+        try (final PDDocument document = PDDocument.load(file)){
+            PDPageTree list = document.getPages();
+            System.out.println(list.getCount());
+            int count = 0;
+            for (PDPage page : list) {
+                PDResources pdResources = page.getResources();
+                int i = 1;
+                for (COSName name : pdResources.getXObjectNames()) {
+                    PDXObject o = pdResources.getXObject(name);
+                    if (o instanceof PDImageXObject) {
+                        PDImageXObject image = (PDImageXObject)o;
+                        String filename = "D:/assets/pdf/output/extracted-image-" + count + ".png";
+                        ImageIO.write(image.getImage(), "png", new File(filename));
+                        i++; count++;
+                    }
                 }
             }
+
+        } catch (IOException e){
+            System.err.println("Exception while trying to create pdf document - " + e);
         }
- 
-        pdfDoc.close();
     }
-}
+    }

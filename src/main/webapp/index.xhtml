@@ -1,0 +1,54 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>Facelet Title</title>
+        <h:outputStylesheet library="style" name="app.css" />
+    </h:head>
+    <h:body>
+        <div id="titre">
+            <div class="text-expand">PDF EDITOR</div>
+        </div>
+        <div id="download">
+            <h3 id="title-download">Ajouter votre PDF à modifier :</h3>
+            <h:form enctype="multipart/form-data">
+                <p:fileUpload value="#{uploadFile.file}" mode="simple"/>
+                <p:commandButton value="Submit" process="@form" ajax="false" action="#{uploadFile.upload()}" disabled="false" />
+            </h:form>
+        </div>
+        <h:form enctype="multipart/form-data"> 
+            <div id="bouttons" style="display:flex; margin-left:13rem;">
+
+                <div class="btn"><p:commandButton value="Image en PDF" ajax="false" action="#{addImage.addImgInPdf()}" disabled="false"/></div>
+                <div class="btn"><p:commandButton value="Fusionner" ajax="false" disabled="false" /></div>
+                <div class="btn"><p:commandButton value="Extraire" ajax="false" action="#{extractImage.extraireImg()}" disabled="false" /></div>
+                <div class="btn"><p:commandButton value="Extraire Page" ajax="false" action="#{extractPage.extraireImg()}" disabled="false" /></div>
+                <div class="btn" id="btn_suppr"><p:commandButton  value="Supprimer" disabled="false"/></div>
+                <div class="btn"><p:commandButton value="Reordonner" ajax="false" action="#{reorderPages.reorderPages()}" disabled="false" /></div>
+                <div class="btn"><p:commandButton value="Signer" ajax="false" action="#{signePdf.signFile()}" disabled="false" /></div>
+
+            </div>
+
+        </h:form>
+
+        <h:form>    
+            <br/>
+            <div id="supprimer">
+                <span class="ui-float-label">
+                    <p:inputText id="float-input" binding="#{input}"/>
+                    <p:outputLabel for="@previous" value="Numéro de la page à supprimer"  />'
+                </span>
+                <p:commandButton value="Remove" ajax="false" disabled="false" action="#{removePage.remove_page(input.value)}" />
+            </div>
+        </h:form>
+        <h:form>
+            <h3>Télécharger le pdf</h3>
+            <p:commandButton value="Download" ajax="false">
+                <p:fileDownload value="#{fileDownloadView.file}" />
+            </p:commandButton>      
+        </h:form>
+        <h:outputScript library="js" name="newjavascript.js" target="head"/>
+    </h:body>
+</html>

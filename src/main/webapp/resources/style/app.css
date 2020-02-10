@@ -1,0 +1,62 @@
+@import url('https://fonts.googleapis.com/css?family=Montserrat&display=swap');
+body{
+    color: #F2A25C;
+    background-color: #262626;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 15px; 
+    height: auto;
+    width: 100%;
+}
+#buttons{
+    display:flex;
+    flex-direction: row;
+    margin-left: 25px;
+}
+.btn{
+    margin-right: 15px;
+}
+#download{
+    margin-bottom: 20px;
+    background-color: #000000ab;
+    padding: 15px 15px 15px 15px;
+    width: 40%;
+    margin-left: 25%;
+    border-radius: 2em;
+}
+#title-download{
+    margin-left: 12%;
+}
+
+.text-expand{
+    animation-name: tracking-in-expand;
+    animation-duration: 3s;
+    font-size: 30px;
+    margin-bottom: 2rem;
+    margin-left: 20px;
+}
+
+
+@-webkit-keyframes tracking-in-expand {
+  0% {
+    letter-spacing: -0.5em;
+    opacity: 0;
+  }
+  40% {
+    opacity: 0.6;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@keyframes tracking-in-expand {
+  0% {
+    letter-spacing: -0.5em;
+    opacity: 0;
+  }
+  40% {
+    opacity: 0.6;
+  }
+  100% {
+    opacity: 1;
+  }
+}

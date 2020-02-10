@@ -5,77 +5,78 @@
  */
 package com.mycompany.couteausuisse;
 
-import com.itextpdf.kernel.PdfException;
-import com.itextpdf.kernel.pdf.PdfDocument;
-import com.itextpdf.kernel.pdf.PdfObject;
-import com.itextpdf.kernel.pdf.PdfReader;
-import com.itextpdf.kernel.pdf.PdfStream;
+import static com.mycompany.couteausuisse.FileDownloadView.deleteFolder;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 import javax.enterprise.context.RequestScoped;
+import javax.imageio.ImageIO;
 import javax.inject.Named;
+import org.apache.pdfbox.cos.COSName;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageTree;
+import org.apache.pdfbox.pdmodel.PDResources;
+import org.apache.pdfbox.pdmodel.graphics.PDXObject;
+import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 
 @Named
 @RequestScoped
 public class ExtractImage {
 
-    public void extraireImg() throws IOException {
+    public void writeImage() throws IOException {
+        deleteFolder(new File("D:/Image/tp_pdf/export/"));
         File folder = new File("D:/Image/tp_pdf/input/");
         File[] listOfFiles = folder.listFiles();
-        for (int i = 0; i < listOfFiles.length; i++) {
-            if (listOfFiles[i].isFile()) {
-                System.out.println(listOfFiles[i].getName());
-                String extension = getFileExtension(listOfFiles[i]);
-                if (extension.equals("pdf")) {
-                    this.extractImageFromPdf("D:/Image/tp_pdf/export/", listOfFiles[i].getAbsolutePath());
+        File file = listOfFiles[0];
+        try (final PDDocument document = PDDocument.load(file)) {
+            PDPageTree list = document.getPages();
+            int count = 0;
+            for (PDPage page : list) {
+                PDResources pdResources = page.getResources();
+                int i = 1;
+                for (COSName name : pdResources.getXObjectNames()) {
+                    PDXObject o = pdResources.getXObject(name);
+                    if (o instanceof PDImageXObject) {
+                        PDImageXObject image = (PDImageXObject) o;
+                        String filename = "D:/Image/tp_pdf/work/image" + count + ".png";
+                        ImageIO.write(image.getImage(), "png", new File(filename));
+                        i++;
+                        count++;
+                    }
                 }
             }
+            ZipFile();
+
+        } catch (IOException e) {
+            System.err.println("Exception while trying to create pdf document - " + e);
         }
-    }
-                
-                
-    public String getFileExtension(File file) {
-        String fileName = file.getName();
-        if (fileName.lastIndexOf(".") != -1 && fileName.lastIndexOf(".") != 0) {
-            return fileName.substring(fileName.lastIndexOf(".") + 1);
-        } else {
-            return "";
-        }
+
     }
 
-    public void extractImageFromPdf(String DEST, String SRC) throws IOException {
-        new File(DEST).getParentFile().mkdirs();
-        new File(DEST).getParentFile().mkdirs();
-        new ExtractImage().manipulatePdf(DEST, SRC);
-    }
-    //public static final String DEST = "./result/new";
+    public static void ZipFile() throws FileNotFoundException, IOException {
+        File folder = new File("D:/Image/tp_pdf/work/");
+        File[] listOfFiles = folder.listFiles();
+        FileOutputStream fos = new FileOutputStream("D:/Image/tp_pdf/export/multiImagesCompressed.zip");
+        ZipOutputStream zipOut = new ZipOutputStream(fos);
+        for (File srcFile : listOfFiles) {
+            FileInputStream fis = new FileInputStream(srcFile);
+            ZipEntry zipEntry = new ZipEntry(srcFile.getName());
+            zipOut.putNextEntry(zipEntry);
 
-    //public static final String SRC = "./result/image.pdf";
-    protected void manipulatePdf(String dest, String SRC) throws IOException {
-        PdfDocument pdfDoc = new PdfDocument(new PdfReader(SRC));
-
-        int numberOfPdfObjects = pdfDoc.getNumberOfPdfObjects();
-        for (int i = 1; i <= numberOfPdfObjects; i++) {
-            PdfObject obj = pdfDoc.getPdfObject(i);
-            if (obj != null && obj.isStream()) {
-                byte[] b;
-                try {
-
-                    // Get decoded stream bytes.
-                    b = ((PdfStream) obj).getBytes();
-                } catch (PdfException exc) {
-
-                    // Get originally encoded stream bytes
-                    b = ((PdfStream) obj).getBytes(false);
-                }
-
-                try (FileOutputStream fos = new FileOutputStream(String.format(dest + "/extract_streams%s.pdf", i))) {
-                    fos.write(b);
-                }
+            byte[] bytes = new byte[1024];
+            int length;
+            while ((length = fis.read(bytes)) >= 0) {
+                zipOut.write(bytes, 0, length);
             }
+            fis.close();
         }
-
-        pdfDoc.close();
+        zipOut.close();
+        fos.close();
     }
+
 }

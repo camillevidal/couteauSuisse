@@ -13,12 +13,15 @@ import com.itextpdf.kernel.pdf.ReaderProperties;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.AreaBreak;
 import com.itextpdf.layout.element.Paragraph;
+import static com.mycompany.couteausuisse.FileDownloadView.deleteFolder;
  
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Named;
@@ -38,6 +41,7 @@ public class ReorderPages {
     }
 
     public void reorderPages() {
+        deleteFolder(new File("D:/Image/tp_pdf/export/"));
         File folder = new File("D:/Image/tp_pdf/input/");
         File[] listOfFiles = folder.listFiles();
         for (int i = 0; i < listOfFiles.length; i++) {
@@ -46,7 +50,9 @@ public class ReorderPages {
                 String extension = getFileExtension(listOfFiles[i]);
                 if (extension.equals("pdf")) {
                     try {
+                        System.out.println("uuuuuuui");
                         reorder(listOfFiles[i].getAbsolutePath());
+                        break;
                     } catch (Exception e) {
                         System.out.println(e);
                     }
@@ -55,54 +61,56 @@ public class ReorderPages {
         }
     }
  
-    public void reorder(String fileToReord) throws Exception {
-        File file = new File(fileToReord);
-        file.getParentFile().mkdirs();
- 
-        new ReorderPages().manipulatePdf(fileToReord);
-    }
- 
-    protected void manipulatePdf(String dest) throws Exception {
-        PdfDocument srcDoc = new PdfDocument(new PdfReader(new RandomAccessSourceFactory()
-                .createSource(createBaos().toByteArray()), new ReaderProperties()));
- 
-        PdfDocument resultDoc = new PdfDocument(new PdfWriter(dest));
- 
-        // One should call this method to preserve the outlines of the source pdf file, otherwise they
-        // will be absent in the resultant document to which we copy pages. In this particular sample,
-        // however, this line doesn't make sense, since the source pdf lacks outlines
-        resultDoc.initializeOutlines();
- 
-        List<Integer> pages = new ArrayList<>();
-        pages.add(1);
-        for (int i = 13; i <= 15; i++) {
-            pages.add(i);
+    public void reorder(String saise) throws Exception {
+       deleteFolder(new File("D:/Image/tp_pdf/export/"));
+        ExplosePdf b = new ExplosePdf();
+        b.diviserPdf();
+        String[] burst = null;
+        ArrayList a = new ArrayList<String>();
+        
+        if(saise != null){
+            burst = saise.split(";");
         }
-        for (int i = 2; i <= 12; i++) {
-            pages.add(i);
+        System.out.println("burst_____" + Arrays.toString(burst));
+        System.out.println("burst_____" + burst[1]);
+        
+        
+        for(String element : burst){
+            a.add(Integer.parseInt(element));
         }
-        pages.add(16);
-        srcDoc.copyPagesTo(pages, resultDoc);
- 
-        resultDoc.close();
-        srcDoc.close();
-    }
- 
-    // Create a temporary document in memory. Then we will reopen it and change the order of its pages
-    private static ByteArrayOutputStream createBaos() {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
- 
-        PdfDocument pdfDoc = new PdfDocument(new PdfWriter(baos));
-        Document doc = new Document(pdfDoc);
- 
-        for (int i = 1; i < 17; i++) {
-            doc.add(new Paragraph(String.format("Page %s", i)));
-            if (16 != i) {
-                doc.add(new AreaBreak());
-            }
+        Collections.sort(a, Collections.reverseOrder());
+        
+        File folder = new File("D:/Image/tp_pdf/work");
+        File[] listOfFiles = folder.listFiles();
+        
+//        int i = 0;
+        ArrayList tempList = new ArrayList<File>();
+        System.out.println("len "+ burst.length);
+        for(int i =0; i<burst.length; i++)
+            for (File e : listOfFiles){
+                System.out.println(e.getName().getClass().getName());
+                System.out.println("----"+ "file"+burst[i]+".pdf");
+                if(String.valueOf(e.getName()).equals("file"+burst[i]+".pdf")){
+                    System.out.println("=====================================");
+                    tempList.add(e.getAbsolutePath());
+                }
+                System.out.println("test1 " + e.getAbsolutePath()); 
         }
-        doc.close();
- 
-        return baos;
+        System.out.println(tempList);
+        
+//        ArrayList tempList = new ArrayList<File>();
+//        for(int i=0; i < a.size(); i++){
+//            System.out.println("test2 " + listOfFiles[((int)a.get(i))-1]);
+//            tempList.add(listOfFiles[((int)a.get(i))-1]);               
+//        }
+        
+//        for(File f : listOfFiles){
+//            if(!tempList.contains(f)){
+//                f.delete();
+//            }
+//        }
+        MergePdf m = new MergePdf();
+        m.fusion(tempList);
+//        m.mergePdfWithPath("D:/Image/tp_pdf/work/");
     }
 }

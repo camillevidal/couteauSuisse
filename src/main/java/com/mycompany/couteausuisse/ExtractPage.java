@@ -7,30 +7,60 @@ package com.mycompany.couteausuisse;
 
 import com.itextpdf.kernel.pdf.PdfReader;
 import com.itextpdf.kernel.pdf.PdfWriter;
-import com.itextpdf.layout.Document;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+//import com.itextpdf.text.Document;
+//import org.dom4j.DocumentException;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import static com.mycompany.couteausuisse.FileDownloadView.deleteFolder;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Named;
 
+
+@Named
+@RequestScoped
 public class ExtractPage {
-//extraction d'une page d'un
-
-//    public void extractPaceFromPdf() throws DocumentException, IOException {
-//        Document document = new Document();
-//        PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream("result/fichierSortie.pdf"));
-//        PdfReader pdfr = new PdfReader("pdf/test.pdf");
-//        PdfReader pdfr2 = new PdfReader("pdf/test1.pdf");
-//        document.open();
-//        PdfContentByte cb = writer.getDirectContent();
-//        for (int i = 1; i <= pdfr.getNumberOfPages(); i++) {
-//
-//            document.newPage();
-//            cb.addTemplate(writer.getImportedPage(pdfr, i), 0, 0);
-//        }
-//        for (int i = 1; i <= pdfr2.getNumberOfPages(); i++) {
-//            document.newPage();
-//            cb.addTemplate(writer.getImportedPage(pdfr2, i), 0, 0);
-//        }
-//        document.close();
-//
-//    }
+    public void extractPaceFromPdf(String saisie) throws FileNotFoundException, IOException, DocumentException {
+        deleteFolder(new File("D:/Image/tp_pdf/export/"));
+        ExplosePdf b = new ExplosePdf();
+        b.diviserPdf();
+        String[] burst = null;
+        ArrayList a = new ArrayList<String>();
+        
+        if(saisie != null){
+            burst = saisie.split(";");
+        }
+        
+        for(String element : burst){
+            a.add(Integer.parseInt(element));
+        }
+        
+        Collections.sort(a, Collections.reverseOrder());
+        
+        File folder = new File("D:/Image/tp_pdf/work");
+        File[] listOfFiles = folder.listFiles();
+        
+        for (File e : listOfFiles){
+            System.out.println("test1 " + e.getAbsolutePath());        
+        }
+        
+        ArrayList tempList = new ArrayList<File>();
+        for(int i=0; i < a.size(); i++){
+            System.out.println("test2 " + listOfFiles[((int)a.get(i))-1]);
+            tempList.add(listOfFiles[((int)a.get(i))-1]);               
+        }
+        
+        for(File f : listOfFiles){
+            if(!tempList.contains(f)){
+                f.delete();
+            }
+        }
+        MergePdf m = new MergePdf();
+        m.mergePdfWithPath("D:/Image/tp_pdf/work/");
+    }
 }

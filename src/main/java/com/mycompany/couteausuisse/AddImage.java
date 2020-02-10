@@ -13,13 +13,14 @@ import com.itextpdf.kernel.pdf.PdfWriter;
 
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Image;
+import static com.mycompany.couteausuisse.FileDownloadView.deleteFolder;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Named;
-import javax.servlet.annotation.WebServlet;
+
 
 /**
  *
@@ -27,15 +28,13 @@ import javax.servlet.annotation.WebServlet;
  */
 @Named
 @RequestScoped
-//@WebServlet(name = "AddImage", urlPatterns = {"/AddImage"})
 public class AddImage {
 
-    public AddImage() {
+    public AddImage() {}
 
-    }
-
-    public void addImgInPdf() throws FileNotFoundException, MalformedURLException {
-        // Creating a PdfWriter       
+    public void addImgInPdf() throws FileNotFoundException, MalformedURLException, IOException {
+        // Creating a PdfWriter     
+        deleteFolder(new File("D:/Image/tp_pdf/export/"));
         String dest = "D:/Image/tp_pdf/export/addingImage.pdf";
         PdfWriter writer = new PdfWriter(dest);
 
@@ -59,6 +58,8 @@ public class AddImage {
             }
         }
         document.close();
+        pdf.close();
+        writer.close();
     }
 
     public void deleteAllFiles(File folder) {

@@ -23,7 +23,6 @@ import com.itextpdf.signatures.PdfSigner;
 import com.itextpdf.signatures.PrivateKeySignature;
 import com.itextpdf.signatures.ITSAClient;
 import com.itextpdf.signatures.TSAClientBouncyCastle;
-import static com.mycompany.couteausuisse.RemovePage.remove;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -54,34 +53,6 @@ public class SignePdf{
     public static final String[] RESULT_FILES = new String[] {
             "hello_hsm.pdf"
     };
-    
-    public void signFile() {
-        File folder = new File("D:/Image/tp_pdf/input/");
-        File[] listOfFiles = folder.listFiles();
-        for (int i = 0; i < listOfFiles.length; i++) {
-            if (listOfFiles[i].isFile()) {
-                System.out.println(listOfFiles[i].getName());
-                String extension = getFileExtension(listOfFiles[i]);
-                if (extension.equals("pdf")) {
-                    try {
-                        System.out.println("111111111111111");
-                        signPdf("D:/Image/tp_pdf/export/export.pdf", listOfFiles[i].getAbsolutePath());
-                    } catch (Exception e) {
-                        System.out.println(e);
-                    }
-                }
-            }
-        }
-    }
-
-    private static String getFileExtension(File file) {
-        String fileName = file.getName();
-        if (fileName.lastIndexOf(".") != -1 && fileName.lastIndexOf(".") != 0) {
-            return fileName.substring(fileName.lastIndexOf(".") + 1);
-        } else {
-            return "";
-        }
-    }
  
     public static void signPdf(String DEST,String SRC ) throws IOException, GeneralSecurityException {
         File file = new File(DEST);
@@ -97,7 +68,8 @@ public class SignePdf{
         BouncyCastleProvider providerBC = new BouncyCastleProvider();
         Security.addProvider(providerBC);
         FileInputStream fis = new FileInputStream(pkcs11cfg);
-        Provider providerPKCS11 = new SunPKCS11(fis);
+        
+        Provider providerPKCS11 = new SunPKCS11();
         Security.addProvider(providerPKCS11);
  
         KeyStore ks = KeyStore.getInstance("PKCS11");

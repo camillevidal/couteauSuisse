@@ -8,28 +8,26 @@
         <h:outputStylesheet library="style" name="app.css" />
     </h:head>
     <h:body>
-        <div id="titre">
-            <h2>PDF EDITOR</h2>
-        </div>
         <h:form enctype="multipart/form-data"> 
+
+        <div id="titre">
+            <h:panelGrid columns="2">
+                <p:outputLabel for="chips" value="Values: " />
+                <p:chips id="chips" />
+            </h:panelGrid>
+            <h2>PDF EDITOR</h2>
+            <p:commandButton value="Image en PDF" ajax="false" action="#{addImage.addImgInPdf()}" disabled="false"/>
+        </div>
             <div class="bouttons">
+                
                 <div class="btn">
-                    <p:commandButton value="Image en PDF" ajax="false" action="#{addImage.addImgInPdf()}" disabled="false"/>
+                    <p:commandButton value="Fusionner" action="#{mergePdf.mergePdf()}" ajax="false" disabled="false" />
                 </div>
                 <div class="btn">
-                    <p:commandButton value="Fusionner" ajax="false" disabled="false" />
-                </div>
-                <div class="btn">
-                    <p:commandButton value="Extraire" ajax="false" action="#{extractImage.extraireImg()}" disabled="false" />
+                    <p:commandButton value="Extraire" ajax="false" action="#{extractImage.writeImage()}" disabled="false" />
                 </div>
             </div>
             <div class="bouttons">
-                <div class="btn" id="btn_suppr">
-                    <p:commandButton value="Supprimer" disabled="false"/> 
-                </div>
-                <div class="btn">
-                    <p:commandButton value="Reordonner" ajax="false" action="#{reorderPages.reorderPages()}" disabled="false" />
-                </div>
                 <div class="btn">
                     <p:commandButton value="Signer" ajax="false" action="#{signePdf.signFile()}" disabled="false" />
                 </div>
@@ -48,7 +46,13 @@
                     <p:inputText id="float-input" binding="#{input}"/>
                     <p:outputLabel for="@previous" value="Numéro de la page à supprimer"  />'
                 </span>
+                <div class="btn">
+                    <p:commandButton value="Extraire Page(s)" ajax="false" action="#{extractPage.extractPaceFromPdf(input.value)}" disabled="false"/>
+                </div>
                 <p:commandButton value="Remove" ajax="false" disabled="false" action="#{removePage.remove_page(input.value)}" />
+                <div class="btn">
+                    <p:commandButton value="Reordonner" ajax="false" action="#{reorderPages.reorder(input.value)}" disabled="false" />
+                </div>
             </div>
         </h:form>
         <h:form>   
@@ -56,6 +60,6 @@
                 <p:fileDownload value="#{fileDownloadView.file}" />
             </p:commandButton>      
         </h:form>
-        <h:outputScript library="js" name="newjavascript.js" target="head"/>
+        <!--<h:outputScript library="js" name="newjavascript.js" target="head"/>-->
     </h:body>
 </html>

@@ -48,6 +48,8 @@ public class UploadFile {
             File targetFile = new File("D:/Image/tp_pdf/input/" + file.getFileName());
             FileOutputStream outStream = new FileOutputStream(targetFile);
             outStream.write(buffer);
+            outStream.close();
+            fileContent.close();
         }
     }
 

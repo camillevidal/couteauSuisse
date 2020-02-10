@@ -20,6 +20,7 @@ import org.primefaces.model.StreamedContent;
 @Named
 @RequestScoped
 public class FileDownloadView {
+
     private StreamedContent file;
 
     public FileDownloadView() {
@@ -29,7 +30,7 @@ public class FileDownloadView {
         try {
             stream = new FileInputStream(listOfFiles[0].getAbsolutePath());
             this.file = new DefaultStreamedContent(stream, "application/pdf", "downloaded_file.pdf");
-            
+
         } catch (FileNotFoundException ex) {
             Logger.getLogger(FileDownloadView.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
@@ -39,30 +40,33 @@ public class FileDownloadView {
                 Logger.getLogger(FileDownloadView.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        //deleteFolder(new File("D:/Image/tp_pdf/export/"));
+//        deleteFolder(new File("D:/Image/tp_pdf/export/"));
     }
-    public StreamedContent getFile() {
-        InputStream stream =null;
+
+    public StreamedContent getFile() throws IOException {
+        InputStream stream = null;
         File folder = new File("D:/Image/tp_pdf/export/");
         File[] listOfFiles = folder.listFiles();
-        System.out.println("test" + listOfFiles[0].getPath());
+        String fileName = listOfFiles[0].getName();
         try {
             stream = new FileInputStream(listOfFiles[0].getAbsolutePath());
         } catch (FileNotFoundException ex) {
             Logger.getLogger(FileDownloadView.class.getName()).log(Level.SEVERE, null, ex);
         }
-        this.file = new DefaultStreamedContent(stream, "application/pdf", "downloaded_file.pdf");
-        //deleteFolder(new File("D:/Image/tp_pdf/export/"));
+        this.file = new DefaultStreamedContent(stream, "application/pdf", fileName);
+        deleteFolder(new File("D:/Image/tp_pdf/input/"));
+        deleteFolder(new File("D:/Image/tp_pdf/work/"));
+        
         return this.file;
     }
-    
+
     public static void deleteFolder(File folder) {
         File[] files = folder.listFiles();
-        if(files!=null) { //some JVMs return null for empty dirs
-            for(File f: files) {
-                    f.delete();
-                }
+        if (files != null) { //some JVMs return null for empty dirs
+            for (File f : files) {
+                f.delete();
+            }
         }
     }
-    
+
 }

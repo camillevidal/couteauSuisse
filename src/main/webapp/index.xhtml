@@ -8,58 +8,78 @@
         <h:outputStylesheet library="style" name="app.css" />
     </h:head>
     <h:body>
-        <h:form enctype="multipart/form-data"> 
-
         <div id="titre">
-            <h:panelGrid columns="2">
-                <p:outputLabel for="chips" value="Values: " />
-                <p:chips id="chips" />
-            </h:panelGrid>
-            <h2>PDF EDITOR</h2>
-            <p:commandButton value="Image en PDF" ajax="false" action="#{addImage.addImgInPdf()}" disabled="false"/>
+            <div class="text-expand">PDF EDITOR</div>
         </div>
-            <div class="bouttons">
-                
-                <div class="btn">
-                    <p:commandButton value="Fusionner" action="#{mergePdf.mergePdf()}" ajax="false" disabled="false" />
-                </div>
-                <div class="btn">
-                    <p:commandButton value="Extraire" ajax="false" action="#{extractImage.writeImage()}" disabled="false" />
-                </div>
+
+        <div id="download">
+            <div>
+                <h3 id="title-download">Ajouter votre PDF à modifier :</h3>
+                <h:form enctype="multipart/form-data">
+                    <p:fileUpload value="#{uploadFile.file}" mode="simple"/>
+                    <br/>
+                    <br/>
+                    <div id ="btn_dwn">
+                    <p:commandButton value="Submit" process="@form" ajax="false" action="#{uploadFile.upload()}" disabled="false" />
+                    </div>
+                </h:form>
             </div>
-            <div class="bouttons">
-                <div class="btn">
-                    <p:commandButton value="Signer" ajax="false" action="#{signePdf.signFile()}" disabled="false" />
-                </div>
+        </div>
+        <h:form enctype="multipart/form-data"> 
+            <div id="bouttons" style="display:flex; margin-left:13rem;">
+
+                <div class="btn"><p:commandButton value="Image en PDF" ajax="false" action="#{addImage.addImgInPdf()}" disabled="false"/></div>
+                <div class="btn"><p:commandButton value="Fusionner" ajax="false" action="#{mergePdf.mergePdf()}" disabled="false" /></div>
+                <div class="btn"><p:commandButton value="Extraire Images" ajax="false" action="#{extractImage.writeImage()}" disabled="false" /></div>
+                <div class="btn" id="btn_extract"><p:commandButton  value="Extraire Page" disabled="false"/></div>
+                <div class="btn" id="btn_suppr"><p:commandButton  value="Supprimer" disabled="false"/></div>
+                <div class="btn" id="btn_reord"><p:commandButton  value="Reordonner" disabled="false"/></div>
+                <div class="btn"><p:commandButton value="Signer" ajax="false" action="#{signePdf.signerPDF()}" disabled="false" /></div>
+
             </div>
-            <p>Ajouter un PDF :</p>
+
         </h:form>
-        <h:form enctype="multipart/form-data">
-            <p:fileUpload value="#{uploadFile.file}" mode="simple" />
-            <br/>
-            <p:commandButton value="Submit" process="@form" ajax="false" action="#{uploadFile.upload()}" disabled="false" />
-        </h:form>
+
         <h:form>    
             <br/>
             <div id="supprimer">
                 <span class="ui-float-label">
-                    <p:inputText id="float-input" binding="#{input}"/>
-                    <p:outputLabel for="@previous" value="Numéro de la page à supprimer"  />'
+                    <p:inputText id="float-input" binding="#{input}" placeholder="ex: 1;2"/>
+                    <p:outputLabel for="@previous" value=" Numéro de la page à supprimer "  />
                 </span>
-                <div class="btn">
-                    <p:commandButton value="Extraire Page(s)" ajax="false" action="#{extractPage.extractPaceFromPdf(input.value)}" disabled="false"/>
-                </div>
-                <p:commandButton value="Remove" ajax="false" disabled="false" action="#{removePage.remove_page(input.value)}" />
-                <div class="btn">
-                    <p:commandButton value="Reordonner" ajax="false" action="#{reorderPages.reorder(input.value)}" disabled="false" />
-                </div>
+                <p:commandButton value="Supprimer" ajax="false" disabled="false" action="#{removePage.remove_page(input.value)}" />
             </div>
         </h:form>
-        <h:form>   
-            <p:commandButton value="Download" ajax="false">
-                <p:fileDownload value="#{fileDownloadView.file}" />
-            </p:commandButton>      
+        <h:form>    
+            <br/>
+            <div id="reordo">
+                <span class="ui-float-label">
+                    <p:inputText id="float-input" binding="#{ordre}" placeholder="ex: 1;4;2;3"/>
+                    <p:outputLabel for="@previous" value=" Choisir ordre "  />
+                </span>
+                <p:commandButton value="Reordonner" ajax="false" action="#{reorderPages.reorder(ordre.value)}" disabled="false" />
+            </div>
         </h:form>
-        <!--<h:outputScript library="js" name="newjavascript.js" target="head"/>-->
+         <h:form>    
+            <br/>
+            <div id="extraire">
+                <span class="ui-float-label">
+                    <p:inputText id="float-input" binding="#{num}" placeholder="ex: 1;2;3" />;
+                    <p:outputLabel for="@previous" value=" Choisir page "  />;
+                </span>
+                <p:commandButton value="Extraire Page" ajax="false" action="#{extractPage.extractPageFromPdf(num.value)}" disabled="false" />
+            </div>
+        </h:form>
+        <div id="downloadFile">
+            <h:form>
+                <h3>Télécharger le pdf</h3>
+                <div id="buttonDownload">
+                    <p:commandButton value="Download" ajax="false" >
+                        <p:fileDownload value="#{fileDownloadView.file}" />
+                    </p:commandButton>      
+                </div>
+            </h:form>
+        </div>
+        <h:outputScript library="js" name="newjavascript.js" target="head"/>
     </h:body>
 </html>

@@ -18,29 +18,23 @@ import org.apache.pdfbox.pdmodel.PDDocument;
  */
 public class ExplosePdf {
     public void diviserPdf() throws java.io.IOException{
-        //Loading an existing PDF document
         deleteFolder(new File("D:/Image/tp_pdf/work/"));
         File folder = new File("D:/Image/tp_pdf/input/");
         File[] listOfFiles = folder.listFiles();
         File file = listOfFiles[0];
-        //Instantiating Splitter class
         try (PDDocument document = PDDocument.load(file)) {
-            //Instantiating Splitter class
+            //spliter pages du pdf
             Splitter splitter = new Splitter();
-
-            //splitting the pages of a PDF document
             List<PDDocument> Pages = splitter.split(document);
 
-            //Creating an iterator
             Iterator<PDDocument> iterator = Pages.listIterator();
 
-            //Saving each page as an individual document
+            // creer un nouveau document pour chaque page
             int i = 1;
             while(iterator.hasNext()) {
-                PDDocument pd = iterator.next();
-                pd.save("D:/Image/tp_pdf/work/file"+ i++ +".pdf");
+                PDDocument pdd = iterator.next();
+                pdd.save("D:/Image/tp_pdf/work/file"+ i++ +".pdf");
             }
-            System.out.println("Multiple PDF’s created");
             document.close();
         }
     }

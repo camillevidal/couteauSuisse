@@ -20,8 +20,6 @@ import javax.inject.Named;
 @RequestScoped
 public class RemovePage {
 
-    //public static final String SRC = "pdf/test.pdf";
-    //public static final String DEST = "result/changed.pdf";
     public static void remove(String DEST, String SRC, int pageToRemove) throws FileNotFoundException, IOException {
         PdfReader reader = new PdfReader(SRC);
         PdfWriter writer = new PdfWriter(DEST);
@@ -31,13 +29,12 @@ public class RemovePage {
     }
 
     public void remove_page(String pageToRemove) {
+        // permet de recuperer du dossier input les fichier pdf puis d'executer la fonction remove
         int page = Integer.parseInt(pageToRemove);
         File folder = new File("D:/Image/tp_pdf/input/");
         File[] listOfFiles = folder.listFiles();
         for (int i = 0; i < listOfFiles.length; i++) {
-            System.out.println(listOfFiles[0]);
             if (listOfFiles[i].isFile()) {
-                System.out.println(listOfFiles[i].getName());
                 String extension = getFileExtension(listOfFiles[i]);
                 if (extension.equals("pdf")) {
                     try {

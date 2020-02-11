@@ -25,7 +25,7 @@ import javax.inject.Named;
 @Named
 @RequestScoped
 public class ExtractPage {
-    public void extractPaceFromPdf(String saisie) throws FileNotFoundException, IOException, DocumentException {
+    public void extractPageFromPdf(String saisie) throws FileNotFoundException, IOException, DocumentException {
         deleteFolder(new File("D:/Image/tp_pdf/export/"));
         ExplosePdf b = new ExplosePdf();
         b.diviserPdf();
@@ -45,13 +45,9 @@ public class ExtractPage {
         File folder = new File("D:/Image/tp_pdf/work");
         File[] listOfFiles = folder.listFiles();
         
-        for (File e : listOfFiles){
-            System.out.println("test1 " + e.getAbsolutePath());        
-        }
         
         ArrayList tempList = new ArrayList<File>();
         for(int i=0; i < a.size(); i++){
-            System.out.println("test2 " + listOfFiles[((int)a.get(i))-1]);
             tempList.add(listOfFiles[((int)a.get(i))-1]);               
         }
         
